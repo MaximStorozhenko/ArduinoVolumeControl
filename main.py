@@ -10,7 +10,7 @@ def main():
         print("Выход из программы...")
         worker.stop()
 
-    tray = TrayIcon(ExitProgram)
+    tray = TrayIcon(worker, ExitProgram)
     tray.Run()
 
     print("Программа завершена.")

@@ -20,6 +20,13 @@ class ArduinoWorker:
         self.volume = interface.QueryInterface(IAudioEndpointVolume)
         ############
 
+    def GetSelectedPort(self) -> str:
+        return self.port
+
+    @staticmethod
+    def GetPorts() -> list[str]:
+        return [p.device for p in serial.tools.list_ports.comports()]
+
     #Установка громкости
     def SetVolume(self, percent: int):
         self.volume.SetMasterVolumeLevelScalar(percent/100, None)
