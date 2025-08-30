@@ -12,6 +12,7 @@ class TrayIcon:
         self.trayIcon = pystray.Icon(
             "ChangeVolumeArduino", self.image, "Arduino громкость", menu=pystray.Menu(
                 pystray.MenuItem("Настройки", self.OpenSettingsWindow),
+                pystray.MenuItem("О программе", self.OpenAboutWindow),
                 pystray.Menu.SEPARATOR,
                 pystray.MenuItem("Выход", self.Exit),
             ))
@@ -23,22 +24,24 @@ class TrayIcon:
         self.onQuitCallback()
         self.trayIcon.stop()
 
+    def CreateWindow(self, win, winWidth, winHeight):
+        win.geometry(f"{winWidth}x{winHeight}")
+        screenWidth = win.winfo_screenwidth()
+        screenHeight = win.winfo_screenheight()
+        centerX = int(screenWidth / 2 - winWidth / 2)
+        centerY = int(screenHeight / 2 - winHeight / 2)
+        win.geometry(f"+{centerX}+{centerY}")
+
+
     def OpenSettingsWindow(self):
         def Run():
             win = tk.Tk()
             win.title("Настройки")
+            win.resizable(False, False)
 
             windowWidth = 300
             windowHeight = 150
-            win.geometry(f"{windowWidth}x{windowHeight}")
-
-            screenWidth = win.winfo_screenwidth()
-            screenHeight = win.winfo_screenheight()
-
-            centerX = int(screenWidth / 2 - windowWidth / 2)
-            centerY = int(screenHeight / 2 - windowHeight / 2)
-
-            win.geometry(f"+{centerX}+{centerY}")
+            self.CreateWindow(win, windowWidth, windowHeight)
 
             # COM порты
             tk.Label(win, text="COM порт:").pack(pady=5)
@@ -63,6 +66,25 @@ class TrayIcon:
                 win.destroy()
 
             ttk.Button(win, text="Применить", command=Apply).pack(pady=10)
+            win.mainloop()
+
+        threading.Thread(target=Run, daemon=True).start()
+
+    def OpenAboutWindow(self):
+        def Run():
+            win = tk.Tk()
+            win.title("О программе")
+            win.resizable(False, False)
+
+            windowWidth = 250
+            windowHeight = 300
+            self.CreateWindow(win, windowWidth, windowHeight)
+
+            tk.Label(win, text="Arduino Volume Control", font=("Arial", 12, "bold")).pack(pady=5)
+            tk.Label(win, text="Версия 1.0").pack(pady=2)
+            tk.Label(win, text="Автор: Максим Стороженко").pack(pady=2)
+
+            ttk.Button(win, text="OK", command=win.destroy).pack(pady=10)
             win.mainloop()
 
         threading.Thread(target=Run, daemon=True).start()
