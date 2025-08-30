@@ -4,11 +4,11 @@ from TrayApp import TrayIcon
 
 def main():
     worker = ArduinoWorker("COM14")
-    worker.start()
+    worker.Start()
 
     def ExitProgram():
         print("Выход из программы...")
-        worker.stop()
+        worker.Stop()
 
     tray = TrayIcon(worker, ExitProgram)
     tray.Run()

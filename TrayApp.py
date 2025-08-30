@@ -58,7 +58,8 @@ class TrayIcon:
             def Apply():
                 port = portVar.get()
                 baud = int(baudVar.get())
-                self.worker.reconnect(port, baud)
+                print(f"port: {port}, baud: {baud}")
+                self.worker.Reconnect(port, baud)
                 win.destroy()
 
             ttk.Button(win, text="Применить", command=Apply).pack(pady=10)

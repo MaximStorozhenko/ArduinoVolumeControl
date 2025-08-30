@@ -99,8 +99,14 @@ class ArduinoWorker:
             self.ArduinoClose()
             print("ArduinoWorker остановлен.")
 
-    # Управление потоко
-    def start(self):
+    def Reconnect(self, port: str, baudrate: int):
+        self.Stop()
+        self.port = port
+        self.baudrate = baudrate
+        self.Start()
+
+    # Управление потоком
+    def Start(self):
         if self.thread and self.thread.is_alive():
             return  # уже запущен
         print("Запуск ArduinoWorker...")
@@ -108,8 +114,9 @@ class ArduinoWorker:
         self.thread = threading.Thread(target=self.WorkerLoop, daemon=True)
         self.thread.start()
 
-    def stop(self):
+    def Stop(self):
         print("Остановка ArduinoWorker...")
         self.running.clear()
         if self.thread:
             self.thread.join()
+    #-------------------------
