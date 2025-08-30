@@ -20,6 +20,13 @@ class ArduinoWorker:
         self.volume = interface.QueryInterface(IAudioEndpointVolume)
         ############
 
+    def GetSelectedPort(self) -> str:
+        return self.port
+
+    @staticmethod
+    def GetPorts() -> list[str]:
+        return [p.device for p in serial.tools.list_ports.comports()]
+
     #Установка громкости
     def SetVolume(self, percent: int):
         self.volume.SetMasterVolumeLevelScalar(percent/100, None)
@@ -92,8 +99,14 @@ class ArduinoWorker:
             self.ArduinoClose()
             print("ArduinoWorker остановлен.")
 
-    # Управление потоко
-    def start(self):
+    def Reconnect(self, port: str, baudrate: int):
+        self.Stop()
+        self.port = port
+        self.baudrate = baudrate
+        self.Start()
+
+    # Управление потоком
+    def Start(self):
         if self.thread and self.thread.is_alive():
             return  # уже запущен
         print("Запуск ArduinoWorker...")
@@ -101,8 +114,9 @@ class ArduinoWorker:
         self.thread = threading.Thread(target=self.WorkerLoop, daemon=True)
         self.thread.start()
 
-    def stop(self):
+    def Stop(self):
         print("Остановка ArduinoWorker...")
         self.running.clear()
         if self.thread:
             self.thread.join()
+    #-------------------------
