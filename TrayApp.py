@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 from ArduinoWorker import ArduinoWorker
+import ConfigManager
 
 class TrayIcon:
     def __init__(self, worker, onQuitCallback):
@@ -46,14 +47,15 @@ class TrayIcon:
             # COM порты
             tk.Label(win, text="COM порт:").pack(pady=5)
             ports = ArduinoWorker.GetPorts()
-            selectedPort = self.worker.GetSelectedPort()
+            selectedPort = self.worker.GetPort()
             portVar = tk.StringVar(value=selectedPort if ports else "")
             portBox = ttk.Combobox(win, textvariable=portVar, values=ports)
             portBox.pack()
 
             # Baudrate
             tk.Label(win, text="Скорость:").pack(pady=5)
-            baudVar = tk.StringVar(value="9600")
+            selectedBaudrate = self.worker.GetBaudrate()
+            baudVar = tk.StringVar(value=str(selectedBaudrate))
             baudBox = ttk.Combobox(win, textvariable=baudVar,
                                     values=["9600", "19200", "38400", "57600", "115200"])
             baudBox.pack()
@@ -61,7 +63,9 @@ class TrayIcon:
             def Apply():
                 port = portVar.get()
                 baud = int(baudVar.get())
-                print(f"port: {port}, baud: {baud}")
+
+                ConfigManager.SaveConfig({"port": port, "baudrate": baud})
+
                 self.worker.Reconnect(port, baud)
                 win.destroy()
 
