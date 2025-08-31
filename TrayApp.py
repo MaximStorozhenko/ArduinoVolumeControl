@@ -76,15 +76,25 @@ class TrayIcon:
             win.title("О программе")
             win.resizable(False, False)
 
-            windowWidth = 250
-            windowHeight = 300
+            windowWidth = 300
+            windowHeight = 250
             self.CreateWindow(win, windowWidth, windowHeight)
 
-            tk.Label(win, text="Arduino Volume Control", font=("Arial", 12, "bold")).pack(pady=5)
-            tk.Label(win, text="Версия 1.0").pack(pady=2)
-            tk.Label(win, text="Автор: Максим Стороженко").pack(pady=2)
+            # --- таблица из 2 строк: верх - контент, низ - кнопка ---
+            win.rowconfigure(0, weight=1)  # контент растягивается
+            win.rowconfigure(1, weight=0)  # кнопка фиксирована
+            win.columnconfigure(0, weight=1)
 
-            ttk.Button(win, text="OK", command=win.destroy).pack(pady=10)
+            # Контент
+            frame = ttk.Frame(win, padding=10)
+            frame.grid(row=0, column=0, sticky="nsew")
+            frame.columnconfigure(0, weight=1)
+
+            tk.Label(frame, text="Arduino Volume Control", font=("Arial", 12, "bold")).grid(row=0, column=0, sticky="ew", pady=5)
+            tk.Label(frame, text="Версия 1.0").grid(row=1, column=0, sticky="ew", pady=2)
+            tk.Label(frame, text="Автор: Максим Стороженко").grid(row=2, column=0, sticky="ew", pady=2)
+
+            ttk.Button(win, text="OK", command=win.destroy).grid(row=1, column=0, padx=10, pady=10)
             win.mainloop()
 
         threading.Thread(target=Run, daemon=True).start()
