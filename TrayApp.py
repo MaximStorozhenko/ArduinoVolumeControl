@@ -11,7 +11,7 @@ class TrayIcon:
         self.onQuitCallback = onQuitCallback
         self.image = PIL.Image.open("trayicon.ico")
         self.trayIcon = pystray.Icon(
-            "ChangeVolumeArduino", self.image, "Arduino громкость", menu=pystray.Menu(
+            "ChangeVolumeArduino", self.image, "Arduino Volume Control", menu=pystray.Menu(
                 pystray.MenuItem("Настройки", self.OpenSettingsWindow),
                 pystray.MenuItem("О программе", self.OpenAboutWindow),
                 pystray.Menu.SEPARATOR,
