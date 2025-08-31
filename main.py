@@ -1,9 +1,13 @@
 from ArduinoWorker import ArduinoWorker
-
 from TrayApp import TrayIcon
+import ConfigManager
 
 def main():
-    worker = ArduinoWorker("COM14")
+    config = ConfigManager.LoadConfig()
+    port = config.get("port", "COM55")
+    baudrate = config.get("baudrate", 9600)
+
+    worker = ArduinoWorker(port, baudrate)
     worker.Start()
 
     def ExitProgram():

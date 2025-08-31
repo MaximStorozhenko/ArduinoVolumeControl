@@ -20,8 +20,10 @@ class ArduinoWorker:
         self.volume = interface.QueryInterface(IAudioEndpointVolume)
         ############
 
-    def GetSelectedPort(self) -> str:
+    def GetPort(self) -> str:
         return self.port
+    def GetBaudrate(self) -> int:
+        return self.baudrate
 
     @staticmethod
     def GetPorts() -> list[str]:
@@ -65,12 +67,12 @@ class ArduinoWorker:
         try:
             while self.running.is_set():
                 if self.arduino is None or not self.arduino.is_open:
-                    print("\nОжидание Arduino...")
+                    print(f"\nОжидание Arduino!... Порт:{self.port} Baud: {self.baudrate}")
                     while self.running.is_set() and self.arduino is None:
                         self.arduino = self.ConnectArduino()
                         time.sleep(2)
 
-                    if self.arduino: print("Arduino подключено!")
+                    if self.arduino: print(f"Arduino подключено! Порт:{self.port} Baud: {self.baudrate}")
 
                 try:
                     if self.arduino and self.arduino.in_waiting:
