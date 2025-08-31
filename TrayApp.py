@@ -27,17 +27,27 @@ class TrayIcon:
 
     #Создание окна по размерам и установка по центру экрана
     def CreateWindow(self, win, winWidth, winHeight):
-        win.geometry(f"{winWidth}x{winHeight}")
+        win.update_idletasks()
+
+        if win.overrideredirect():
+            outerW, outerH = winWidth, winHeight
+        else:
+            offsetLeft = win.winfo_rootx() - win.winfo_x()
+            offsetTop = win.winfo_rooty() - win.winfo_y()
+            outerW = winWidth + 2 * offsetLeft
+            outerH = winHeight + offsetTop + offsetLeft
+
         screenWidth = win.winfo_screenwidth()
         screenHeight = win.winfo_screenheight()
-        centerX = int(screenWidth / 2 - winWidth / 2)
-        centerY = int(screenHeight / 2 - winHeight / 2)
-        win.geometry(f"+{centerX}+{centerY}")
+        dX = int(screenWidth / 2 - outerW / 2)
+        dY = int(screenHeight / 2 - outerH / 2)
+        win.geometry(f"{winWidth}x{winHeight}+{dX}+{dY}")
 
     def OpenSettingsWindow(self):
         def Run():
             win = tk.Tk()
             win.title("Настройки")
+            win.iconbitmap("trayicon.ico")
             win.resizable(False, False)  #Запрет на изменение размера
 
             windowWidth = 300
