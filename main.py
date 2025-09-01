@@ -2,6 +2,7 @@ from ArduinoWorker import ArduinoWorker
 from TrayApp import TrayIcon
 import ConfigManager
 from SingleInstance import SingleInstance
+import sys
 
 def main():
     SingleInstance("ArduinoVolumeControl")
@@ -24,3 +25,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    sys.exit(0)

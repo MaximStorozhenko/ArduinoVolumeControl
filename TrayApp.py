@@ -4,14 +4,15 @@ from tkinter import ttk
 import threading
 from ArduinoWorker import ArduinoWorker
 import ConfigManager
+import sys, os
 
 class TrayIcon:
     def __init__(self, worker, onQuitCallback):
         self.worker = worker
         self.onQuitCallback = onQuitCallback
-        self.image = PIL.Image.open("trayicon.ico")
+        #self.image = PIL.Image.open(self.ResourcePath("trayicon.ico"))
         self.trayIcon = pystray.Icon(
-            "ChangeVolumeArduino", self.image, "Arduino Volume Control", menu=pystray.Menu(
+            "ChangeVolumeArduino", PIL.Image.open(self.ResourcePath("trayicon.ico")), "Arduino Volume Control", menu=pystray.Menu(
                 pystray.MenuItem("Настройки", self.OpenSettingsWindow),
                 pystray.MenuItem("О программе", self.OpenAboutWindow),
                 pystray.Menu.SEPARATOR,
@@ -24,6 +25,12 @@ class TrayIcon:
     def Exit(self):
         self.onQuitCallback()
         self.trayIcon.stop()
+
+    #Returns the absolute path to the resource
+    def ResourcePath(self, relativePath):
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relativePath)
+        return os.path.join(os.path.abspath("."), relativePath)
 
     #Создание окна по размерам и установка по центру экрана
     def CreateWindow(self, win, winWidth, winHeight):
@@ -47,7 +54,7 @@ class TrayIcon:
         def Run():
             win = tk.Tk()
             win.title("Настройки")
-            win.iconbitmap("trayicon.ico")
+            win.iconbitmap(self.ResourcePath("trayicon.ico"))
             win.resizable(False, False)  #Запрет на изменение размера
 
             windowWidth = 300
